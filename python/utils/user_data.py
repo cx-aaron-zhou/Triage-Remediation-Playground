@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -14,7 +15,14 @@ def get_user(user_id):
     user = users.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
-    return jsonify(user)
+    # Sanitize user data to prevent XSS by escaping all string values
+    sanitized_user = {key: escape(str(value)) if isinstance(value, str) else value
+                      for key, value in user.items()}
+    response = jsonify(sanitized_user)
+    # Set secure headers to prevent XSS
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
 
 # A01:Broken Access Control — Missing authentication on admin endpoint
 @app.route('/admin/users', methods=['GET'])
