@@ -4,10 +4,16 @@
   "description": "Hello World demo app",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha 'routes/**/*.test.js'"
   },
   "dependencies": {
     "express": "4.17.1",
     "lodash": "4.17.20"
+  },
+  "devDependencies": {
+    "mocha": "^9.2.2",
+    "chai": "^4.3.6",
+    "supertest": "^6.2.2"
   }
 }
