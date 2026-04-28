@@ -16,6 +16,8 @@ public class FileServlet extends HttpServlet {
         File file = new File(BASE_DIR + filename);
 
         response.setContentType("application/octet-stream");
+        // Add HSTS header to enforce HTTPS-only access
+        response.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         try (FileInputStream fis = new FileInputStream(file);
              OutputStream os = response.getOutputStream()) {
             byte[] buffer = new byte[4096];
