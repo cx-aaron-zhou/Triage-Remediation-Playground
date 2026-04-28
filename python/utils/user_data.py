@@ -1,6 +1,11 @@
+import os
 from flask import Flask, jsonify, request
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
+# CSRF protection requires a secret key
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-key-change-in-production')
+csrf = CSRFProtect(app)
 
 users = {
     "1": {"name": "Alice", "email": "alice@example.com", "ssn": "123-45-6789", "role": "user"},
