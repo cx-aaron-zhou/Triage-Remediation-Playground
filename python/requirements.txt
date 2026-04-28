@@ -1,2 +1,4 @@
 requests==2.25.1
 flask==1.1.2
+flask-wtf==0.14.3
+pytest==6.2.5
