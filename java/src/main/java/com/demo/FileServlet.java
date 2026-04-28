@@ -13,7 +13,28 @@ public class FileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String filename = request.getParameter("filename");
-        File file = new File(BASE_DIR + filename);
+
+        // Validate and sanitize the filename to prevent path traversal
+        if (filename == null || filename.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Filename parameter is required");
+            return;
+        }
+
+        // Normalize the path and validate it stays within BASE_DIR
+        File baseDir = new File(BASE_DIR).getCanonicalFile();
+        File file = new File(baseDir, filename).getCanonicalFile();
+
+        // Ensure the resolved path is within the base directory
+        if (!file.getCanonicalPath().startsWith(baseDir.getCanonicalPath() + File.separator)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+            return;
+        }
+
+        // Check if file exists and is a regular file
+        if (!file.exists() || !file.isFile()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+            return;
+        }
 
         response.setContentType("application/octet-stream");
         try (FileInputStream fis = new FileInputStream(file);
