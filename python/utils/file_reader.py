@@ -13,7 +13,12 @@ BASE_DIR = "/var/www/static"
 def download_file():
     filename = request.args.get('filename', '')
     file_path = os.path.join(BASE_DIR, filename)
-    return send_file(file_path)
+    # Fix for Reflected XSS: Use as_attachment to force download and prevent inline execution
+    # The safe_filename parameter ensures proper encoding of the filename in Content-Disposition header
+    # This prevents XSS attacks through malicious filenames and forces safe file handling
+    import werkzeug.utils
+    safe_name = werkzeug.utils.secure_filename(filename) if filename else 'download'
+    return send_file(file_path, as_attachment=True, download_name=safe_name)
 
 def read_report(report_name: str) -> str:
     file_path = BASE_DIR + "/" + report_name
