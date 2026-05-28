@@ -13,5 +13,5 @@ app = Flask(__name__)
 @app.route('/config', methods=['POST'])
 def load_config():
     raw = request.data.decode('utf-8')
-    config = yaml.load(raw)          # unsafe — should be yaml.safe_load()
+    config = yaml.safe_load(raw)     # safe — only deserializes standard YAML types
     return jsonify(config)
