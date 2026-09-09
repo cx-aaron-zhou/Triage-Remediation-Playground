@@ -15,10 +15,14 @@
     </properties>
 
     <dependencies>
+        <!-- Updated from 2.14.1 to 2.17.1 to remediate CVE-2021-44228 (Log4Shell).
+             Versions prior to 2.15.0 allow remote code execution via JNDI lookup
+             in log messages. Version 2.17.1 completely removes JNDI lookup
+             functionality and also addresses CVE-2021-45046 and CVE-2021-45105. -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.14.1</version>
+            <version>2.17.1</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
